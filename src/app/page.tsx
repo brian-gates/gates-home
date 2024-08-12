@@ -19,15 +19,18 @@ export default function Home() {
   const hue2 = useTransform(mouseY, [0, window.innerHeight], [240, 300]); // Purple hues
   const hue3 = useTransform(mouseX, [0, window.innerWidth], [150, 270]); // Green to purple transition
 
-  const color1 = useTransform(hue1, (h) => `hsl(${h}, 70%, 50%)`);
-  const color2 = useTransform(hue2, (h) => `hsla(${h}, 70%, 50%, 0.7)`);
-  const color3 = useTransform(hue3, (h) => `hsla(${h}, 70%, 50%, 0.7)`);
+  const color1 = useTransform(hue1, (h) => `hsl(${h}, 70%, 30%)`);
+  const color2 = useTransform(hue2, (h) => `hsla(${h}, 70%, 30%, 0.7)`);
+  const color3 = useTransform(hue3, (h) => `hsla(${h}, 70%, 30%, 0.7)`);
 
-  const backgroundTemplate = useMotionTemplate`radial-gradient(circle ${gradientSize.current}px at 50% 50%, ${color1}, ${color2}, ${color3})`;
+  const gradientRadius = useSpring(0, { damping: 40, stiffness: 50 });
+
+  const backgroundTemplate = useMotionTemplate`radial-gradient(circle ${gradientRadius}px at ${mouseX}px ${mouseY}px, ${color1}, ${color2}, ${color3})`;
 
   useEffect(() => {
     const updateGradientSize = () => {
       gradientSize.current = Math.max(window.innerWidth, window.innerHeight);
+      gradientRadius.set(gradientSize.current);
     };
 
     const handleMouseMove = (event: MouseEvent) => {
@@ -45,7 +48,7 @@ export default function Home() {
       window.removeEventListener("resize", updateGradientSize);
       window.removeEventListener("mousemove", handleMouseMove);
     };
-  }, [mouseX, mouseY]);
+  }, [mouseX, mouseY, gradientRadius]);
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center p-24 relative overflow-hidden">
@@ -57,13 +60,13 @@ export default function Home() {
           backgroundPosition: "center",
         }}
       />
-      <h1 className="text-4xl font-bold mb-8 text-white relative z-10 text-shadow-lg transition-all duration-300 ease-in-out">
+      <h1 className="text-4xl font-bold mb-8 text-white relative z-10 text-shadow-lg transition-all duration-300 ease-in-out drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]">
         Hello
       </h1>
       <div className="flex items-center justify-center mb-4 relative z-10 transition-all duration-300 ease-in-out">
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          className="h-12 w-12 text-white transition-all duration-300 ease-in-out"
+          className="h-12 w-12 text-white transition-all duration-300 ease-in-out drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
